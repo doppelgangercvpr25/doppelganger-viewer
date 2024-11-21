@@ -94,15 +94,6 @@ const SidePanel: React.FC<SidePanelProps> = ({
         }
     };
 
-
-    const handleEmailClick = () => {
-        const email = "megascenes.dataset@gmail.com";
-        navigator.clipboard.writeText(email).then(() => {
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
-        });
-    };
-
     return (
         <>
             <div className="fixed inset-y-0 left-0 z-20 flex select-none">

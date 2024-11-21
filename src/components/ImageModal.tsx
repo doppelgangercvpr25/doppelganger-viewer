@@ -11,7 +11,7 @@ import type { ImageData, CameraData } from "../hooks/useCOLMAPLoader";
 import useDelayedLinkActivation from "../hooks/useDelayedLinkActivation";
 import { load } from 'cheerio';
 
-const S3_IMAGES_URL = "https://megascenes.s3.us-west-2.amazonaws.com/images/";
+const S3_IMAGES_URL = "https://<>.s3.us-west-2.amazonaws.com/images/";
 const WIKI_IMAGE_URL = "https://commons.wikimedia.org/wiki/File:";
 const WIKI_CAT_URL = "https://commons.wikimedia.org/wiki/Category:";
 
