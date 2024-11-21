@@ -41,7 +41,7 @@ const Scene: React.FC<SceneProps> = ({
     const cams = useCameraData(name, rec_no, benchmark);
     const circleTexture = useLoader(
         THREE.TextureLoader,
-        "/images/circle.png"
+        "/doppelganger-viewer/images/circle.png"
     );
 
     const initializePointCloud = useCallback(() => {
