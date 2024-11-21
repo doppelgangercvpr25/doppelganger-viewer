@@ -1,0 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	overscroll-behavior-x: none;
+	overscroll-behavior-y: none;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+	border-radius: 10px;
+}
+
+:hover::-webkit-scrollbar {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: transparent;
+	border-radius: 10px;
+	background-clip: padding-box;
+}
+
+:active::-webkit-scrollbar-thumb,
+:hover::-webkit-scrollbar-thumb {
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+button:focus {
+	outline: none;
+}
+
+.icon-style {
+	pointer-events: none;
+}
