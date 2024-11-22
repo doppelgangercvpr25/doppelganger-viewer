@@ -4,16 +4,12 @@ import {
     IconChevronCompactLeft,
     IconMinusVertical,
     IconX,
-    IconPaperclip,
-    IconBrandGithub,
-    IconDatabase,
-    IconWorld,
-    IconCheck
 } from "@tabler/icons-react";
-import Tooltip from "@mui/material/Tooltip";
 
 import Card from "./Card";
 import { SceneType } from "../../types";
+
+import reconMetadata from "../../public/data/recon_metadata.json";
 
 interface SidePanelProps {
     scene?: SceneType;
@@ -31,7 +27,16 @@ const SidePanel: React.FC<SidePanelProps> = ({
 }) => {
     const [iconState, setIconState] = useState<string>("right");
     const [showButton, setShowButton] = useState<boolean>(false);
-    const [isCopied, setIsCopied] = useState<boolean>(false);
+
+    const reconData = useMemo(() => {
+        const dataMap = new Map();
+        Object.entries(reconMetadata).forEach(([benchmark, landmarks]) => {
+            Object.entries(landmarks).forEach(([landmarkName, values]) => {
+                dataMap.set(benchmark + landmarkName, values.slice(1));
+            });
+        });
+        return dataMap;
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
@@ -131,10 +136,14 @@ const SidePanel: React.FC<SidePanelProps> = ({
                                                 rec_no={index}
                                                 scene={scene}
                                                 numOfPts={
-                                                    "??"
+                                                    reconData.get(scene.benchmark + scene.name)[
+                                                    index * 2 + 1
+                                                    ]
                                                 }
                                                 numOfCams={
-                                                    "??"
+                                                    reconData.get(scene.benchmark + scene.name)[
+                                                    index * 2
+                                                    ]
                                                 }
                                                 isSelected={
                                                     rec_no !== undefined &&

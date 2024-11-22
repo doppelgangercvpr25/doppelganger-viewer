@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 interface CardProps {
     scene: SceneType;
     rec_no: number;
-    numOfPts?: string;
-    numOfCams?: string;
+    numOfPts?: number;
+    numOfCams?: number;
     isSelected: boolean;
 }
 

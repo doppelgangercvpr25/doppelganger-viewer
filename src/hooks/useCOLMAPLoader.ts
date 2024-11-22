@@ -105,6 +105,63 @@ const parseImageData = (buffer: ArrayBuffer): ImageData[] => {
     return images;
 };
 
+const parseMiniImageData = (buffer: ArrayBuffer): ImageData[] => {
+    const dataview = new DataView(buffer);
+    let offset = 0;
+
+    const numRegImages = dataview.getBigUint64(offset, true);
+    offset += 8;
+
+    const images = [];
+    const decoder = new TextDecoder("utf-8");
+
+    for (let i = 0; i < numRegImages; i++) {
+        const imageId = dataview.getUint32(offset, true);
+        offset += 4;
+
+        const qvec = [
+            dataview.getFloat64(offset, true),
+            dataview.getFloat64(offset + 8, true),
+            dataview.getFloat64(offset + 16, true),
+            dataview.getFloat64(offset + 24, true),
+        ];
+        const tvec = [
+            dataview.getFloat64(offset + 32, true),
+            dataview.getFloat64(offset + 40, true),
+            dataview.getFloat64(offset + 48, true),
+        ];
+        offset += 56;
+
+        const cameraId = dataview.getUint32(offset, true);
+        offset += 4;
+
+        let imageNameBytes = [];
+        while (offset < buffer.byteLength) {
+            const charCode = dataview.getUint8(offset++);
+            if (charCode === 0) break;
+            imageNameBytes.push(charCode);
+        }
+
+        const imageName = decoder.decode(new Uint8Array(imageNameBytes));
+
+        images.push({
+            id: imageId,
+            qvec,
+            tvec,
+            cameraId,
+            name: imageName,
+        });
+    }
+
+    if (images.length !== Number(numRegImages)) {
+        throw new Error(
+            `Expected ${numRegImages} images, but parsed ${images.length}`
+        );
+    }
+
+    return images;
+};
+
 const enhanceColor = (
     r: number,
     g: number,
@@ -159,6 +216,44 @@ const parsePointData = (buffer: ArrayBuffer): THREE.BufferGeometry => {
         offset += 8;
 
         offset += Number(track_length) * 8;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(points, 3)
+    );
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute("pointId", new THREE.Float32BufferAttribute(pointIds, 1));
+
+    return geometry;
+};
+
+const parseMiniPointData = (buffer: ArrayBuffer): THREE.BufferGeometry => {
+    const points: number[] = [];
+    const colors: number[] = [];
+    const pointIds: number[] = [];
+    const dataview = new DataView(buffer);
+
+    const numPoints = dataview.getBigUint64(0, true);
+    let offset = 8;
+
+    for (let i = 0; i < numPoints; i++) {
+        const point3D_id = dataview.getBigUint64(offset, true);
+        const x = dataview.getFloat64(offset + 8, true);
+        const y = dataview.getFloat64(offset + 16, true);
+        const z = dataview.getFloat64(offset + 24, true);
+        offset += 32;
+
+        const r = dataview.getUint8(offset);
+        const g = dataview.getUint8(offset + 1);
+        const b = dataview.getUint8(offset + 2);
+        offset += 3;
+
+        const c = enhanceColor(r, g, b, 1.5, 1.5);
+        points.push(x, y, z);
+        colors.push(c.r / 255, c.g / 255, c.b / 255);
+        pointIds.push(Number(point3D_id));
     }
 
     const geometry = new THREE.BufferGeometry();

@@ -92,14 +92,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
     // load scenes
     useEffect(() => {
         const loadedScenes = Object.entries(reconMetadata).flatMap(([benchmark, landmarks]) =>
-            Object.entries(landmarks).map(([name, no_of_rec]) => ({
+            Object.entries(landmarks).map(([name, values]) => ({
                 name: String(name),
                 normalized_name: `${benchmark.charAt(0).toUpperCase() + benchmark.slice(1)} - ${String(name)
                     .replace(/_/g, " ")
                     .normalize("NFD")
                     .replace(/[\u0300-\u036f]/g, "")}`,
                 benchmark: benchmark,
-                no_of_rec: Number(no_of_rec),
+                no_of_rec: Number(values[0]),
             }))
         );
 
