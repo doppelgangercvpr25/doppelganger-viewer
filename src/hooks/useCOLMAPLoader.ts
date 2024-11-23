@@ -305,7 +305,7 @@ const parseCameraData = (buffer: ArrayBuffer): CameraData[] => {
 
 export const useImageData = (name: string, rec_no: number, benchmark: string): ImageData[] => {
     const [images, setImages] = useState<ImageData[]>([]);
-    const url = benchmark === "baseline" ? `${BASE_URL}baselines/${name}/${encodeURIComponent(rec_no.toString())}/images.bin` : `${BASE_URL}supp/${name}/reconstruction_dopp/cache/reconstruction/${encodeURIComponent(rec_no.toString())}/images.bin`;
+    const url = benchmark === "baseline" ? `${BASE_URL}baselines_mini/${name}/${encodeURIComponent(rec_no.toString())}/images.minibin` : `${BASE_URL}supp_mini/${name}/reconstruction_dopp/cache/reconstruction/${encodeURIComponent(rec_no.toString())}/images.minibin`;
     useEffect(() => {
         const controller = new AbortController();
         const fetchImageData = async () => {
@@ -314,7 +314,7 @@ export const useImageData = (name: string, rec_no: number, benchmark: string): I
                     signal: controller.signal,
                 });
                 const buffer = await response.arrayBuffer();
-                const loadedImages = parseImageData(buffer);
+                const loadedImages = parseMiniImageData(buffer);
                 setImages(loadedImages);
             } catch (error) {
                 if ((error as Error).name === "AbortError") {
@@ -373,7 +373,7 @@ export const usePointLoader = (
     benchmark: string
 ): THREE.BufferGeometry | undefined => {
     const [pointCloud, setPointCloud] = useState<THREE.BufferGeometry>();
-    const url = benchmark === "baseline" ? `${BASE_URL}baselines/${name}/${encodeURIComponent(rec_no.toString())}/points3D.bin` : `${BASE_URL}supp/${name}/reconstruction_dopp/cache/reconstruction/${encodeURIComponent(rec_no.toString())}/points3D.bin`;
+    const url = benchmark === "baseline" ? `${BASE_URL}baselines_mini/${name}/${encodeURIComponent(rec_no.toString())}/points3D.minibin` : `${BASE_URL}supp_mini/${name}/reconstruction_dopp/cache/reconstruction/${encodeURIComponent(rec_no.toString())}/points3D.minibin`;
     useEffect(() => {
         const controller = new AbortController();
         const fetchData = async () => {
@@ -382,7 +382,7 @@ export const usePointLoader = (
                     signal: controller.signal,
                 });
                 const buffer = await response.arrayBuffer();
-                const cloud = parsePointData(buffer);
+                const cloud = parseMiniPointData(buffer);
                 setPointCloud(cloud);
             } catch (error) {
                 if ((error as Error).name === "AbortError") {
